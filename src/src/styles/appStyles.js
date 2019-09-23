@@ -1,8 +1,20 @@
 const appstyles = theme => ({
-  App: {
+  app: {
     height: "100vh",
-    width: "100%",
-    backgroundColor: "gray"
+    width: "100vw",
+    backgroundColor: "gray",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  box: {
+    position: "relative",
+    height: "80vh",
+    width: "80vw"
+  },
+  paper: {
+    padding: "24px"
   }
 });
 
