@@ -1,26 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
-import clsx from "clsx";
-import { lighten, makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TablePagination from "@material-ui/core/TablePagination";
-import TableRow from "@material-ui/core/TableRow";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import DeleteIcon from "@material-ui/icons/Delete";
-import FilterListIcon from "@material-ui/icons/FilterList";
-import JpTableHeadCell from "./JpTableHeadCell";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TablePagination,
+  TableRow,
+  Paper,
+  Checkbox,
+  FormControlLabel,
+  Switch
+} from "@material-ui/core";
+import JpTableHead from "./JpTableHead";
+import JpTableToolbar from "./JpTableToolbar";
 import update from "immutability-helper";
+
+import { JpTableStyles } from "./styles/JpTableStyles";
+const useStyles = makeStyles(JpTableStyles);
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -49,171 +46,6 @@ function getSorting(order, orderBy) {
     ? (a, b) => desc(a, b, orderBy)
     : (a, b) => -desc(a, b, orderBy);
 }
-
-function EnhancedTableHead(props) {
-  const {
-    classes,
-    columns,
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-    moveCard
-  } = props;
-  const createSortHandler = property => event => {
-    onRequestSort(event, property);
-  };
-
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all desserts" }}
-          />
-        </TableCell>
-        {columns.map((headCell, index) => (
-          <JpTableHeadCell
-            index={index}
-            id={headCell.id}
-            moveCard={moveCard}
-            key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
-            padding={headCell.disablePadding ? "none" : "default"}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={order}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </span>
-              ) : null}
-            </TableSortLabel>
-          </JpTableHeadCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
-
-EnhancedTableHead.propTypes = {
-  classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired
-};
-
-const useToolbarStyles = makeStyles(theme => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1)
-  },
-  highlight:
-    theme.palette.type === "light"
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
-  spacer: {
-    flex: "1 1 100%"
-  },
-  actions: {
-    color: theme.palette.text.secondary
-  },
-  title: {
-    flex: "0 0 auto"
-  }
-}));
-
-const EnhancedTableToolbar = props => {
-  const classes = useToolbarStyles();
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0
-      })}
-    >
-      <div className={classes.title}>
-        {numSelected > 0 ? (
-          <Typography color="inherit" variant="subtitle1">
-            {numSelected} selected
-          </Typography>
-        ) : (
-          <Typography variant="h6" id="tableTitle">
-            JpTable
-          </Typography>
-        )}
-      </div>
-      <div className={classes.spacer} />
-      <div className={classes.actions}>
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
-    </Toolbar>
-  );
-};
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired
-};
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: "100%",
-    marginTop: theme.spacing(3)
-  },
-  paper: {
-    width: "100%",
-    marginBottom: theme.spacing(2)
-  },
-  table: {
-    minWidth: 750
-  },
-  tableWrapper: {
-    overflowX: "auto"
-  },
-  visuallyHidden: {
-    border: 0,
-    clip: "rect(0 0 0 0)",
-    height: 1,
-    margin: -1,
-    overflow: "hidden",
-    padding: 0,
-    position: "absolute",
-    top: 20,
-    width: 1
-  }
-}));
 
 function JpTable({ columns, usersData }) {
   const classes = useStyles();
@@ -289,14 +121,14 @@ function JpTable({ columns, usersData }) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <JpTableToolbar numSelected={selected.length} />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
             size={dense ? "small" : "medium"}
           >
-            <EnhancedTableHead
+            <JpTableHead
               classes={classes}
               columns={columnsData}
               moveCard={moveCard}
