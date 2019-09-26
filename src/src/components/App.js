@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Paper } from "@material-ui/core";
-import JpTable from "./jpTable/JpTable";
-import appStyles from "./../styles/appStyles";
 import axios from "axios";
+import JpTable from "./jpTable/JpTable";
+
+import appStyles from "./../styles/appStyles";
 
 const useStyles = makeStyles(appStyles);
 
@@ -14,12 +14,26 @@ function App() {
 
   useEffect(() => {
     axios.get(`https://jsonplaceholder.typicode.com/users`).then(res => {
-      console.log(res.data);
       setUsersData(res.data);
     });
   }, []);
 
-  const columns = ["id", "name", "username", "email"];
+  const columns = [
+    {
+      id: "id",
+      numeric: false,
+      disablePadding: false,
+      label: "User Id"
+    },
+    { id: "name", numeric: false, disablePadding: false, label: "Name" },
+    {
+      id: "username",
+      numeric: false,
+      disablePadding: false,
+      label: "Username"
+    },
+    { id: "email", numeric: false, disablePadding: false, label: "Email" }
+  ];
 
   return (
     <div className={classes.app}>
@@ -31,7 +45,5 @@ function App() {
     </div>
   );
 }
-
-App.propTypes = {};
 
 export default App;
