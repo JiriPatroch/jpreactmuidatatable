@@ -1,6 +1,6 @@
 import React, { useImperativeHandle, useRef } from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { DragSource, DropTarget } from "react-dnd";
 import TableCell from "@material-ui/core/TableCell";
 import ItemTypes from "./ItemTypes";
