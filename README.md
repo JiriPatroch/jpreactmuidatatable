@@ -2,6 +2,16 @@
 
 Datatable based on most popular React UI framework "Material-UI"
 
+## Description
+
+### Current Table Functions
+
+1. Pagination
+2. Rows per page
+3. Multiple Rows select
+4. ASC / DESC + single property sorting
+5. Reorder Columns by drag and drop their headcells
+
 ## Available Scripts
 
 In the project directory, you can run:

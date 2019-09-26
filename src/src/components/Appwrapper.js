@@ -3,14 +3,20 @@ import PropTypes from "prop-types";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
+import { DndProvider } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 
-//const theme = createMuiTheme(Theme);
+const theme = createMuiTheme();
 
 function Appwrapper({ children }) {
   return (
     <>
-      <CssBaseline />
-      {children}
+      <ThemeProvider theme={theme}>
+        <DndProvider backend={HTML5Backend}>
+          <CssBaseline />
+          {children}
+        </DndProvider>
+      </ThemeProvider>
     </>
   );
 }

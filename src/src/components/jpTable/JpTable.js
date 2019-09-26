@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { lighten, makeStyles } from "@material-ui/core/styles";
@@ -19,6 +19,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import JpTableHeadCell from "./JpTableHeadCell";
+import update from "immutability-helper";
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -32,11 +34,13 @@ function desc(a, b, orderBy) {
 
 function stableSort(array, cmp) {
   const stabilizedThis = array.map((el, index) => [el, index]);
+
   stabilizedThis.sort((a, b) => {
     const order = cmp(a[0], b[0]);
     if (order !== 0) return order;
     return a[1] - b[1];
   });
+
   return stabilizedThis.map(el => el[0]);
 }
 
@@ -46,27 +50,17 @@ function getSorting(order, orderBy) {
     : (a, b) => -desc(a, b, orderBy);
 }
 
-const headCells = [
-  {
-    id: "id",
-    numeric: false,
-    disablePadding: true,
-    label: "User Id"
-  },
-  { id: "name", numeric: false, disablePadding: false, label: "Name" },
-  { id: "username", numeric: false, disablePadding: false, label: "Username" },
-  { id: "email", numeric: false, disablePadding: false, label: "Email" }
-];
-
 function EnhancedTableHead(props) {
   const {
     classes,
+    columns,
     onSelectAllClick,
     order,
     orderBy,
     numSelected,
     rowCount,
-    onRequestSort
+    onRequestSort,
+    moveCard
   } = props;
   const createSortHandler = property => event => {
     onRequestSort(event, property);
@@ -83,8 +77,11 @@ function EnhancedTableHead(props) {
             inputProps={{ "aria-label": "select all desserts" }}
           />
         </TableCell>
-        {headCells.map(headCell => (
-          <TableCell
+        {columns.map((headCell, index) => (
+          <JpTableHeadCell
+            index={index}
+            id={headCell.id}
+            moveCard={moveCard}
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "default"}
@@ -102,7 +99,7 @@ function EnhancedTableHead(props) {
                 </span>
               ) : null}
             </TableSortLabel>
-          </TableCell>
+          </JpTableHeadCell>
         ))}
       </TableRow>
     </TableHead>
@@ -220,6 +217,7 @@ const useStyles = makeStyles(theme => ({
 
 function JpTable({ columns, usersData }) {
   const classes = useStyles();
+  const [columnsData, setColumnsData] = React.useState(columns);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("username");
   const [selected, setSelected] = React.useState([]);
@@ -235,7 +233,7 @@ function JpTable({ columns, usersData }) {
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      const newSelecteds = usersData.map(n => n.name);
+      const newSelecteds = usersData.map(n => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -275,7 +273,15 @@ function JpTable({ columns, usersData }) {
     setDense(event.target.checked);
   }
 
-  const isSelected = name => selected.indexOf(name) !== -1;
+  const moveCard = (dragIndex, hoverIndex) => {
+    const dragCard = columnsData[dragIndex];
+    setColumnsData(
+      update(columnsData, {
+        $splice: [[dragIndex, 1], [hoverIndex, 0, dragCard]]
+      })
+    );
+  };
+  const isSelected = id => selected.indexOf(id) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, usersData.length - page * rowsPerPage);
@@ -292,6 +298,8 @@ function JpTable({ columns, usersData }) {
           >
             <EnhancedTableHead
               classes={classes}
+              columns={columnsData}
+              moveCard={moveCard}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -323,11 +331,17 @@ function JpTable({ columns, usersData }) {
                         />
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row">
-                        {row.id}
+                        {row[columnsData[0].id]}
                       </TableCell>
-                      <TableCell align="left">{row.name}</TableCell>
-                      <TableCell align="left">{row.username}</TableCell>
-                      <TableCell align="left">{row.email}</TableCell>
+                      <TableCell align="left">
+                        {row[columnsData[1].id]}
+                      </TableCell>
+                      <TableCell align="left">
+                        {row[columnsData[2].id]}
+                      </TableCell>
+                      <TableCell align="left">
+                        {row[columnsData[3].id]}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -362,5 +376,10 @@ function JpTable({ columns, usersData }) {
     </div>
   );
 }
+
+JpTable.prototypes = {
+  columns: PropTypes.array.isRequired,
+  usersData: PropTypes.array.isRequired
+};
 
 export default JpTable;
