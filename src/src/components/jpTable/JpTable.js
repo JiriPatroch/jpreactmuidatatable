@@ -12,6 +12,8 @@ import {
   FormControlLabel,
   Switch
 } from "@material-ui/core";
+import CreateIcon from "@material-ui/icons/Create";
+import DeleteSharpIcon from "@material-ui/icons/DeleteSharp";
 import JpTableHead from "./JpTableHead";
 import JpTableToolbar from "./JpTableToolbar";
 import update from "immutability-helper";
@@ -105,8 +107,26 @@ function JpTable({ columns, usersData }) {
     setDense(event.target.checked);
   }
 
+  function handleHideShowColumn(columnObj) {
+    let isItemInArray;
+
+    columnsData.forEach(element => {
+      if (element.id === columnObj.id) {
+        isItemInArray = true;
+      } else {
+        return;
+      }
+    });
+
+    if (isItemInArray) {
+      setColumnsData(columnsData.filter(item => item.id !== columnObj.id));
+    } else {
+      setColumnsData([...columnsData, columnObj]);
+    }
+  }
+
   const moveCard = (dragIndex, hoverIndex) => {
-    const dragCard = columnsData[dragIndex];
+    let dragCard = columnsData[dragIndex];
     setColumnsData(
       update(columnsData, {
         $splice: [[dragIndex, 1], [hoverIndex, 0, dragCard]]
@@ -121,7 +141,11 @@ function JpTable({ columns, usersData }) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <JpTableToolbar numSelected={selected.length} />
+        <JpTableToolbar
+          numSelected={selected.length}
+          columns={columnsData}
+          handleHideShowColumn={handleHideShowColumn}
+        />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -149,7 +173,7 @@ function JpTable({ columns, usersData }) {
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.id)}
+                      //onClick={event => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -160,19 +184,29 @@ function JpTable({ columns, usersData }) {
                         <Checkbox
                           checked={isItemSelected}
                           inputProps={{ "aria-labelledby": labelId }}
+                          onClick={event => handleClick(event, row.id)}
                         />
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
-                        {row[columnsData[0].id]}
+                      {columnsData.map((data, index) => {
+                        return (
+                          <TableCell component="th" key={index}>
+                            {row[columnsData[index].id]}
+                          </TableCell>
+                        );
+                      })}
+                      <TableCell>
+                        <CreateIcon
+                          onClick={() => {
+                            console.log(row);
+                          }}
+                        />
                       </TableCell>
-                      <TableCell align="left">
-                        {row[columnsData[1].id]}
-                      </TableCell>
-                      <TableCell align="left">
-                        {row[columnsData[2].id]}
-                      </TableCell>
-                      <TableCell align="left">
-                        {row[columnsData[3].id]}
+                      <TableCell>
+                        <DeleteSharpIcon
+                          onClick={() => {
+                            console.log(row);
+                          }}
+                        />
                       </TableCell>
                     </TableRow>
                   );

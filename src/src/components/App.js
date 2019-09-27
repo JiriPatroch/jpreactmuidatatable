@@ -22,6 +22,7 @@ function App() {
     {
       id: "id",
       numeric: false,
+      isSortable: true,
       disablePadding: false,
       label: "User Id"
     },
@@ -29,6 +30,7 @@ function App() {
     {
       id: "username",
       numeric: false,
+      isSortable: true,
       disablePadding: false,
       label: "Username"
     },

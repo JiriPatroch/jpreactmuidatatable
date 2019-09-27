@@ -7,6 +7,8 @@ import {
   TableRow,
   TableSortLabel
 } from "@material-ui/core";
+import CreateIcon from "@material-ui/icons/Create";
+import DeleteSharpIcon from "@material-ui/icons/DeleteSharp";
 import JpTableHeadCell from "./JpTableHeadCell";
 
 function JpTableHead(props) {
@@ -33,7 +35,6 @@ function JpTableHead(props) {
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={numSelected === rowCount}
             onChange={onSelectAllClick}
-            inputProps={{ "aria-label": "select all desserts" }}
           />
         </TableCell>
         {columns.map((headCell, index) => (
@@ -60,6 +61,12 @@ function JpTableHead(props) {
             </TableSortLabel>
           </JpTableHeadCell>
         ))}
+        <TableCell>
+          <CreateIcon />
+        </TableCell>
+        <TableCell>
+          <DeleteSharpIcon />
+        </TableCell>
       </TableRow>
     </TableHead>
   );
