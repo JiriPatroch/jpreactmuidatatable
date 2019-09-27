@@ -53,11 +53,13 @@ function JpTable({ columns, usersData }) {
   const classes = useStyles();
   const [columnsData, setColumnsData] = React.useState(columns);
   const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("username");
+  const [orderBy, setOrderBy] = React.useState("id");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [isSearching, setIsSearching] = React.useState(false);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === "desc";
@@ -125,6 +127,46 @@ function JpTable({ columns, usersData }) {
     }
   }
 
+  function handleSearch(e) {
+    if (e.target.value !== null && e.target.value !== "") {
+      setSearchTerm(e.target.value);
+      setPage(0);
+      setIsSearching(true);
+    } else {
+      setSearchTerm("");
+      setIsSearching(false);
+    }
+  }
+
+  function searchTermFullText(term, dataArray) {
+    let filteredData = [];
+
+    if (term !== null && term !== "") {
+      dataArray.forEach(user => {
+        columnsData.forEach(col => {
+          if (
+            user[col.id]
+              .toString()
+              .toLowerCase()
+              .includes(term.toString().toLowerCase())
+          ) {
+            if (filteredData.findIndex(i => i.id === user.id) > -1) {
+              return dataArray;
+            } else {
+              filteredData.push(user);
+            }
+          } else {
+            return dataArray;
+          }
+        });
+      });
+
+      return filteredData;
+    } else {
+      return dataArray;
+    }
+  }
+
   const moveCard = (dragIndex, hoverIndex) => {
     let dragCard = columnsData[dragIndex];
     setColumnsData(
@@ -145,6 +187,7 @@ function JpTable({ columns, usersData }) {
           numSelected={selected.length}
           columns={columnsData}
           handleHideShowColumn={handleHideShowColumn}
+          handleSearch={handleSearch}
         />
         <div className={classes.tableWrapper}>
           <Table
@@ -164,7 +207,10 @@ function JpTable({ columns, usersData }) {
               rowCount={usersData.length}
             />
             <TableBody>
-              {stableSort(usersData, getSorting(order, orderBy))
+              {stableSort(
+                searchTermFullText(searchTerm, usersData),
+                getSorting(order, orderBy)
+              )
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id);
@@ -194,14 +240,14 @@ function JpTable({ columns, usersData }) {
                           </TableCell>
                         );
                       })}
-                      <TableCell>
+                      <TableCell className={classes.tableCell}>
                         <CreateIcon
                           onClick={() => {
                             console.log(row);
                           }}
                         />
                       </TableCell>
-                      <TableCell>
+                      <TableCell className={classes.tableCell}>
                         <DeleteSharpIcon
                           onClick={() => {
                             console.log(row);
@@ -222,7 +268,11 @@ function JpTable({ columns, usersData }) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={usersData.length}
+          count={
+            !isSearching
+              ? usersData.length
+              : searchTermFullText(searchTerm, usersData).length
+          }
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{

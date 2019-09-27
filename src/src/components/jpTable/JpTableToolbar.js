@@ -22,7 +22,12 @@ import { JpTableToolbarStyles } from "./styles/JpTableToolbarStyles";
 
 const useStyles = makeStyles(JpTableToolbarStyles);
 
-const JpTableToolbar = ({ numSelected, columns, handleHideShowColumn }) => {
+const JpTableToolbar = ({
+  numSelected,
+  columns,
+  handleHideShowColumn,
+  handleSearch
+}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [columnsNames] = React.useState(columns);
@@ -74,6 +79,7 @@ const JpTableToolbar = ({ numSelected, columns, handleHideShowColumn }) => {
                     input: classes.inputInput
                   }}
                   inputProps={{ "aria-label": "search" }}
+                  onChange={e => handleSearch(e)}
                 />
               </div>
 
@@ -103,16 +109,7 @@ const JpTableToolbar = ({ numSelected, columns, handleHideShowColumn }) => {
                 </Typography>
                 {columnsNames.map((headCell, index) => {
                   return (
-                    <Box
-                      style={{
-                        padding: "5px",
-                        display: "flex",
-                        flexDirection: "row",
-                        flex: 1,
-                        justifyContent: "space-between"
-                      }}
-                      key={index}
-                    >
+                    <Box className={classes.menuItemsBox} key={index}>
                       <MenuItem onClick={handleClose}>{headCell.id}</MenuItem>
                       <Checkbox
                         onClick={() => handleHideShowColumn(headCell)}
@@ -138,7 +135,8 @@ const JpTableToolbar = ({ numSelected, columns, handleHideShowColumn }) => {
 JpTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   columns: PropTypes.array.isRequired,
-  handleHideShowColumn: PropTypes.func.isRequired
+  handleHideShowColumn: PropTypes.func.isRequired,
+  handleSearch: PropTypes.func.isRequired
 };
 
 export default JpTableToolbar;

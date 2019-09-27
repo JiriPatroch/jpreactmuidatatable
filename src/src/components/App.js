@@ -13,7 +13,7 @@ function App() {
   const [usersData, setUsersData] = useState([]);
 
   useEffect(() => {
-    axios.get(`https://jsonplaceholder.typicode.com/users`).then(res => {
+    axios.get(`https://jsonplaceholder.typicode.com/comments`).then(res => {
       setUsersData(res.data);
     });
   }, []);
@@ -28,7 +28,7 @@ function App() {
     },
     { id: "name", numeric: false, disablePadding: false, label: "Name" },
     {
-      id: "username",
+      id: "postId",
       numeric: false,
       isSortable: true,
       disablePadding: false,

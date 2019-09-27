@@ -4,6 +4,8 @@ Datatable based on most popular React UI framework "Material-UI"
 
 ## Description
 
+This project is still on its start and it is continuously improved..
+
 ### Current Table Functions
 
 1. Pagination
@@ -11,6 +13,7 @@ Datatable based on most popular React UI framework "Material-UI"
 3. Multiple Rows select
 4. ASC / DESC + single property sorting
 5. Reorder Columns by drag and drop their headcells
+6. Hide / Show Columns
 
 ## Available Scripts
 
