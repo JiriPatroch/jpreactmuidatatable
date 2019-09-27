@@ -25,7 +25,13 @@ export const JpTableToolbarStyles = theme => ({
   title: {
     flex: "0 0 auto"
   },
-
+  menuItemsBox: {
+    padding: "5px",
+    display: "flex",
+    flexDirection: "row",
+    flex: 1,
+    justifyContent: "space-between"
+  },
   search: {
     position: "relative",
     borderRadius: theme.shape.borderRadius,
