@@ -58,7 +58,22 @@ function getSorting(order, orderBy) {
     : (a, b) => -desc(a, b, orderBy);
 }
 
-function JpTable({ columns, usersData }) {
+const defaultTableSetting = {
+  tableName: "JpTable",
+  globalSearch: true,
+  hideColumns: true,
+  tableMenu: true,
+  multiSearch: true,
+  editing: true,
+  deleting: true,
+  denseRowsSwitch: true
+};
+
+function JpTable({
+  columns,
+  usersData,
+  tableSetting = { ...defaultTableSetting }
+}) {
   const classes = useStyles();
   const [columnsData, setColumnsData] = React.useState(columns);
   const [order, setOrder] = React.useState("asc");
@@ -70,12 +85,7 @@ function JpTable({ columns, usersData }) {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [isSearching, setIsSearching] = React.useState(false);
   const [isSearchingMulti, setIsSearchingMulti] = React.useState(false);
-  const [multiSearchTerms, setMultiSearchTerms] = React.useState({
-    id: "",
-    name: "",
-    postId: "",
-    email: ""
-  });
+  const [multiSearchTerms, setMultiSearchTerms] = React.useState({});
   const [isExactly, setIsExactly] = React.useState({});
 
   function handleRequestSort(event, property) {
@@ -225,7 +235,7 @@ function JpTable({ columns, usersData }) {
     console.log(data.postId);
     console.log(data.email);
 
-    if (data.id !== null && data.id !== "") {
+    if (data.id !== null && data.id !== "" && data.id !== undefined) {
       filtered = filtered.filter(user =>
         isExactly.id
           ? user.id.toString().toLowerCase() ===
@@ -237,7 +247,7 @@ function JpTable({ columns, usersData }) {
       );
     }
 
-    if (data.name !== null && data.name !== "") {
+    if (data.name !== null && data.name !== "" && data.name !== undefined) {
       filtered = filtered.filter(user =>
         isExactly.name
           ? user.name.toString().toLowerCase() ===
@@ -249,7 +259,11 @@ function JpTable({ columns, usersData }) {
       );
     }
 
-    if (data.postId !== null && data.postId !== "") {
+    if (
+      data.postId !== null &&
+      data.postId !== "" &&
+      data.postId !== undefined
+    ) {
       filtered = filtered.filter(user =>
         isExactly.postId
           ? user.postId.toString().toLowerCase() ===
@@ -261,7 +275,7 @@ function JpTable({ columns, usersData }) {
       );
     }
 
-    if (data.email !== null && data.email !== "") {
+    if (data.email !== null && data.email !== "" && data.email !== undefined) {
       filtered = filtered.filter(user =>
         isExactly.email
           ? user.email.toString().toLowerCase() ===
@@ -316,49 +330,51 @@ function JpTable({ columns, usersData }) {
           columns={columnsData}
           handleHideShowColumn={handleHideShowColumn}
           handleSearch={handleSearch}
+          tableSetting={tableSetting}
         />
 
-        <ExpansionPanel defaultExpanded={true}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Advanced Search</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <Box className={classes.advSearchFiledsBox}>
-              {columnsData.map(col => {
-                return (
-                  <div key={col.id}>
-                    <TextField
-                      id={col.id}
-                      autoComplete="off"
-                      className={classes.advSearchField}
-                      label={col.label}
-                      margin="dense"
-                      variant="outlined"
-                      onChange={e => {
-                        handleMultiSearch(e, col.id);
-                      }}
-                    />
-                    <Tooltip
-                      disableFocusListener
-                      disableTouchListener
-                      title="is Exactly?"
-                    >
-                      <Checkbox
-                        name={col.id}
-                        onChange={e => handleExactSearch(e, col.id)}
-                        inputProps={{
-                          "aria-label": "primary checkbox"
+        {tableSetting.multiSearch ? (
+          <ExpansionPanel defaultExpanded={true}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>Advanced Search</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Box className={classes.advSearchFiledsBox}>
+                {columnsData.map(col => {
+                  return (
+                    <div key={col.id}>
+                      <TextField
+                        id={col.id}
+                        autoComplete="off"
+                        className={classes.advSearchField}
+                        label={col.label}
+                        margin="dense"
+                        variant="outlined"
+                        onChange={e => {
+                          handleMultiSearch(e, col.id);
                         }}
-                        style={{ marginLeft: "-50px", marginTop: "7px" }}
                       />
-                    </Tooltip>
-                  </div>
-                );
-              })}
-            </Box>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-
+                      <Tooltip
+                        disableFocusListener
+                        disableTouchListener
+                        title="is Exactly?"
+                      >
+                        <Checkbox
+                          name={col.id}
+                          onChange={e => handleExactSearch(e, col.id)}
+                          inputProps={{
+                            "aria-label": "primary checkbox"
+                          }}
+                          style={{ marginLeft: "-50px", marginTop: "7px" }}
+                        />
+                      </Tooltip>
+                    </div>
+                  );
+                })}
+              </Box>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        ) : null}
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -375,6 +391,7 @@ function JpTable({ columns, usersData }) {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={usersData.length}
+              tableSetting={tableSetting}
             />
             <TableBody>
               {stableSort(
@@ -410,20 +427,26 @@ function JpTable({ columns, usersData }) {
                           </TableCell>
                         );
                       })}
-                      <TableCell className={classes.tableCell}>
-                        <CreateIcon
-                          onClick={() => {
-                            console.log(row);
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        <DeleteSharpIcon
-                          onClick={() => {
-                            console.log(row);
-                          }}
-                        />
-                      </TableCell>
+
+                      {tableSetting.hasEditing ? (
+                        <TableCell className={classes.tableCell}>
+                          <CreateIcon
+                            onClick={() => {
+                              console.log(row);
+                            }}
+                          />
+                        </TableCell>
+                      ) : null}
+
+                      {tableSetting.hasEditing ? (
+                        <TableCell className={classes.tableCell}>
+                          <DeleteSharpIcon
+                            onClick={() => {
+                              console.log(row);
+                            }}
+                          />
+                        </TableCell>
+                      ) : null}
                     </TableRow>
                   );
                 })}
@@ -457,10 +480,12 @@ function JpTable({ columns, usersData }) {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
+      {tableSetting.denseRowsSwitch ? (
+        <FormControlLabel
+          control={<Switch checked={dense} onChange={handleChangeDense} />}
+          label="Dense padding"
+        />
+      ) : null}
     </div>
   );
 }

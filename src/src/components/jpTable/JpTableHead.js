@@ -21,7 +21,8 @@ function JpTableHead(props) {
     numSelected,
     rowCount,
     onRequestSort,
-    moveCard
+    moveCard,
+    tableSetting
   } = props;
   const createSortHandler = property => event => {
     onRequestSort(event, property);
@@ -61,12 +62,16 @@ function JpTableHead(props) {
             </TableSortLabel>
           </JpTableHeadCell>
         ))}
-        <TableCell>
-          <CreateIcon />
-        </TableCell>
-        <TableCell>
-          <DeleteSharpIcon />
-        </TableCell>
+        {tableSetting.hasEditing ? (
+          <TableCell>
+            <CreateIcon />
+          </TableCell>
+        ) : null}
+        {tableSetting.hasDeleting ? (
+          <TableCell>
+            <DeleteSharpIcon />
+          </TableCell>
+        ) : null}
       </TableRow>
     </TableHead>
   );
