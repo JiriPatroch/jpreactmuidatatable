@@ -26,7 +26,8 @@ const JpTableToolbar = ({
   numSelected,
   columns,
   handleHideShowColumn,
-  handleSearch
+  handleSearch,
+  tableSetting
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -53,7 +54,7 @@ const JpTableToolbar = ({
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
-            JpTable
+            {tableSetting.tableName}
           </Typography>
         )}
       </div>
@@ -68,67 +69,77 @@ const JpTableToolbar = ({
         ) : (
           <>
             <Box display="flex" flexDirection="row">
-              <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
+              {tableSetting.globalSearch ? (
+                <div className={classes.search}>
+                  <div className={classes.searchIcon}>
+                    <SearchIcon />
+                  </div>
+                  <InputBase
+                    placeholder="Search…"
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.inputInput
+                    }}
+                    inputProps={{ "aria-label": "search" }}
+                    onChange={e => handleSearch(e)}
+                  />
                 </div>
-                <InputBase
-                  placeholder="Search…"
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput
-                  }}
-                  inputProps={{ "aria-label": "search" }}
-                  onChange={e => handleSearch(e)}
-                />
-              </div>
+              ) : null}
 
-              <Tooltip title="Settings">
-                <IconButton
-                  aria-label="Settings"
-                  aria-controls="simple-menu"
-                  aria-haspopup="true"
-                  onClick={handleClick}
-                >
-                  <SettingsApplicationsSharpIcon />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-                PaperProps={{
-                  style: {
-                    padding: 20
-                  }
-                }}
-              >
-                <Typography
-                  variant="subtitle1"
-                  align="center"
-                  color="secondary"
-                >
-                  Hide/Show Columns
-                </Typography>
-                {columnsNames.map((headCell, index) => {
-                  return (
-                    <Box className={classes.menuItemsBox} key={index}>
-                      <MenuItem onClick={handleClose}>{headCell.id}</MenuItem>
-                      <Checkbox
-                        onClick={() => handleHideShowColumn(headCell)}
-                      />
-                    </Box>
-                  );
-                })}
-              </Menu>
+              {tableSetting.columnsHideShowSwitch ? (
+                <>
+                  <Tooltip title="Settings">
+                    <IconButton
+                      aria-label="Settings"
+                      aria-controls="simple-menu"
+                      aria-haspopup="true"
+                      onClick={handleClick}
+                    >
+                      <SettingsApplicationsSharpIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                    PaperProps={{
+                      style: {
+                        padding: 20
+                      }
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      align="center"
+                      color="secondary"
+                    >
+                      Hide/Show Columns
+                    </Typography>
+                    {columnsNames.map((headCell, index) => {
+                      return (
+                        <Box className={classes.menuItemsBox} key={index}>
+                          <MenuItem onClick={handleClose}>
+                            {headCell.id}
+                          </MenuItem>
+                          <Checkbox
+                            onClick={() => handleHideShowColumn(headCell)}
+                          />
+                        </Box>
+                      );
+                    })}
+                  </Menu>
+                </>
+              ) : null}
 
-              <Tooltip title="Filter list">
-                <IconButton aria-label="filter list">
-                  <FilterListIcon />
-                </IconButton>
-              </Tooltip>
+              {tableSetting.tableMenu ? (
+                <Tooltip title="Filter list">
+                  <IconButton aria-label="filter list">
+                    <FilterListIcon />
+                  </IconButton>
+                </Tooltip>
+              ) : null}
             </Box>
           </>
         )}
@@ -141,7 +152,8 @@ JpTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   columns: PropTypes.array.isRequired,
   handleHideShowColumn: PropTypes.func.isRequired,
-  handleSearch: PropTypes.func.isRequired
+  handleSearch: PropTypes.func.isRequired,
+  tableSetting: PropTypes.object.isRequired
 };
 
 export default JpTableToolbar;
