@@ -32,7 +32,7 @@ function App() {
       numeric: false,
       isSortable: true,
       disablePadding: false,
-      label: "Username"
+      label: "Post Id"
     },
     { id: "email", numeric: false, disablePadding: false, label: "Email" }
   ];

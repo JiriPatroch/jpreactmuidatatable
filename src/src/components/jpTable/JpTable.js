@@ -2,21 +2,30 @@ import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Paper,
+  Switch,
   Table,
   TableBody,
   TableCell,
   TablePagination,
   TableRow,
-  Paper,
-  Checkbox,
-  FormControlLabel,
-  Switch
+  Tooltip
 } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
 import DeleteSharpIcon from "@material-ui/icons/DeleteSharp";
 import JpTableHead from "./JpTableHead";
 import JpTableToolbar from "./JpTableToolbar";
 import update from "immutability-helper";
+
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import Typography from "@material-ui/core/Typography";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import TextField from "@material-ui/core/TextField";
 
 import { JpTableStyles } from "./styles/JpTableStyles";
 const useStyles = makeStyles(JpTableStyles);
@@ -56,10 +65,18 @@ function JpTable({ columns, usersData }) {
   const [orderBy, setOrderBy] = React.useState("id");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [isSearching, setIsSearching] = React.useState(false);
+  const [isSearchingMulti, setIsSearchingMulti] = React.useState(false);
+  const [multiSearchTerms, setMultiSearchTerms] = React.useState({
+    id: "",
+    name: "",
+    postId: "",
+    email: ""
+  });
+  const [isExactly, setIsExactly] = React.useState({});
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === "desc";
@@ -128,6 +145,7 @@ function JpTable({ columns, usersData }) {
   }
 
   function handleSearch(e) {
+    setIsSearchingMulti(false);
     if (e.target.value !== null && e.target.value !== "") {
       setSearchTerm(e.target.value);
       setPage(0);
@@ -135,6 +153,37 @@ function JpTable({ columns, usersData }) {
     } else {
       setSearchTerm("");
       setIsSearching(false);
+    }
+  }
+
+  function handleMultiSearch(e, colId) {
+    setIsSearching(false);
+    if (e.target.value !== null) {
+      setMultiSearchTerms({
+        ...multiSearchTerms,
+        [colId]: e.target.value
+      });
+      setPage(0);
+      setIsSearchingMulti(true);
+    } else {
+      console.log("erorr");
+      // setMultiSearchTerms({
+      //   id: "",
+      //   name: "",
+      //   postId: "",
+      //   email: ""
+      // });
+      //setIsSearchingMulti(false);
+    }
+  }
+
+  function searchSwitch(term, data, dataArray) {
+    if (isSearching) {
+      return searchTermFullText(term, dataArray);
+    } else if (isSearchingMulti) {
+      return searchMultiTerms(data, dataArray);
+    } else {
+      return dataArray;
     }
   }
 
@@ -160,10 +209,89 @@ function JpTable({ columns, usersData }) {
           }
         });
       });
-
       return filteredData;
     } else {
       return dataArray;
+    }
+  }
+
+  function searchMultiTerms(data, dataArray) {
+    let filtered = dataArray;
+
+    console.log(dataArray);
+
+    console.log(data.id);
+    console.log(data.name);
+    console.log(data.postId);
+    console.log(data.email);
+
+    if (data.id !== null && data.id !== "") {
+      filtered = filtered.filter(user =>
+        isExactly.id
+          ? user.id.toString().toLowerCase() ===
+            data.id.toString().toLowerCase()
+          : user.id
+              .toString()
+              .toLowerCase()
+              .includes(data.id.toString().toLowerCase())
+      );
+    }
+
+    if (data.name !== null && data.name !== "") {
+      filtered = filtered.filter(user =>
+        isExactly.name
+          ? user.name.toString().toLowerCase() ===
+            data.name.toString().toLowerCase()
+          : user.name
+              .toString()
+              .toLowerCase()
+              .includes(data.name.toString().toLowerCase())
+      );
+    }
+
+    if (data.postId !== null && data.postId !== "") {
+      filtered = filtered.filter(user =>
+        isExactly.postId
+          ? user.postId.toString().toLowerCase() ===
+            data.postId.toString().toLowerCase()
+          : user.postId
+              .toString()
+              .toLowerCase()
+              .includes(data.postId.toString().toLowerCase())
+      );
+    }
+
+    if (data.email !== null && data.email !== "") {
+      filtered = filtered.filter(user =>
+        isExactly.email
+          ? user.email.toString().toLowerCase() ===
+            data.email.toString().toLowerCase()
+          : user.email
+              .toString()
+              .toLowerCase()
+              .includes(data.email.toString().toLowerCase())
+      );
+    }
+
+    if (filtered.length === dataArray.length) {
+      setIsSearchingMulti(false);
+    }
+
+    console.log(filtered);
+    return filtered;
+  }
+
+  function handleExactSearch(e, colId) {
+    if (e.target.checked === true) {
+      setIsExactly({
+        ...isExactly,
+        [e.target.name]: true
+      });
+    } else {
+      setIsExactly({
+        ...isExactly,
+        [e.target.name]: false
+      });
     }
   }
 
@@ -189,6 +317,48 @@ function JpTable({ columns, usersData }) {
           handleHideShowColumn={handleHideShowColumn}
           handleSearch={handleSearch}
         />
+
+        <ExpansionPanel defaultExpanded={true}>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Advanced Search</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Box className={classes.advSearchFiledsBox}>
+              {columnsData.map(col => {
+                return (
+                  <div key={col.id}>
+                    <TextField
+                      id={col.id}
+                      autoComplete="off"
+                      className={classes.advSearchField}
+                      label={col.label}
+                      margin="dense"
+                      variant="outlined"
+                      onChange={e => {
+                        handleMultiSearch(e, col.id);
+                      }}
+                    />
+                    <Tooltip
+                      disableFocusListener
+                      disableTouchListener
+                      title="is Exactly?"
+                    >
+                      <Checkbox
+                        name={col.id}
+                        onChange={e => handleExactSearch(e, col.id)}
+                        inputProps={{
+                          "aria-label": "primary checkbox"
+                        }}
+                        style={{ marginLeft: "-50px", marginTop: "7px" }}
+                      />
+                    </Tooltip>
+                  </div>
+                );
+              })}
+            </Box>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -208,7 +378,7 @@ function JpTable({ columns, usersData }) {
             />
             <TableBody>
               {stableSort(
-                searchTermFullText(searchTerm, usersData),
+                searchSwitch(searchTerm, multiSearchTerms, usersData),
                 getSorting(order, orderBy)
               )
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -269,9 +439,11 @@ function JpTable({ columns, usersData }) {
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={
-            !isSearching
-              ? usersData.length
-              : searchTermFullText(searchTerm, usersData).length
+            isSearching
+              ? searchTermFullText(searchTerm, usersData).length
+              : isSearchingMulti
+              ? searchMultiTerms(multiSearchTerms, usersData).length
+              : usersData.length
           }
           rowsPerPage={rowsPerPage}
           page={page}

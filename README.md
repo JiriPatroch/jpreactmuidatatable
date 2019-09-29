@@ -14,6 +14,8 @@ This project is still on its start and it is continuously improved..
 4. ASC / DESC + single property sorting
 5. Reorder Columns by drag and drop their headcells
 6. Hide / Show Columns
+7. Global Searching (one term in all columns)
+8. Advanced Searching (based on multiple terms)
 
 ## Available Scripts
 

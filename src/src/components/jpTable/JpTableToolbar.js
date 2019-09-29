@@ -99,6 +99,11 @@ const JpTableToolbar = ({
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
+                PaperProps={{
+                  style: {
+                    padding: 20
+                  }
+                }}
               >
                 <Typography
                   variant="subtitle1"
