@@ -16,6 +16,7 @@ This project is still on its start and it is continuously improved..
 6. Hide / Show Columns
 7. Global Searching (one term in all columns)
 8. Advanced Searching (based on multiple terms)
+9. Changeable Searching mode (exact term / include term)
 
 ## Available Scripts
 
