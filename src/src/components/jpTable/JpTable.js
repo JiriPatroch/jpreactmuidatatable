@@ -61,11 +61,11 @@ function getSorting(order, orderBy) {
 const defaultTableSetting = {
   tableName: "JpTable",
   globalSearch: true,
-  hideColumns: true,
+  columnsHideShowSwitch: true,
   tableMenu: true,
   multiSearch: true,
-  editing: true,
-  deleting: true,
+  hasEditing: true,
+  hasDeleting: true,
   denseRowsSwitch: true
 };
 
@@ -176,14 +176,8 @@ function JpTable({
       setPage(0);
       setIsSearchingMulti(true);
     } else {
-      console.log("erorr");
-      // setMultiSearchTerms({
-      //   id: "",
-      //   name: "",
-      //   postId: "",
-      //   email: ""
-      // });
-      //setIsSearchingMulti(false);
+      setMultiSearchTerms({});
+      setIsSearchingMulti(false);
     }
   }
 
@@ -228,70 +222,24 @@ function JpTable({
   function searchMultiTerms(data, dataArray) {
     let filtered = dataArray;
 
-    console.log(dataArray);
+    columnsData.forEach(col => {
+      if (
+        data[col.id] !== null &&
+        data[col.id] !== "" &&
+        data[col.id] !== undefined
+      ) {
+        filtered = filtered.filter(user =>
+          isExactly[col.id]
+            ? user[col.id].toString().toLowerCase() ===
+              data[col.id].toString().toLowerCase()
+            : user[col.id]
+                .toString()
+                .toLowerCase()
+                .includes(data[col.id].toString().toLowerCase())
+        );
+      }
+    });
 
-    console.log(data.id);
-    console.log(data.name);
-    console.log(data.postId);
-    console.log(data.email);
-
-    if (data.id !== null && data.id !== "" && data.id !== undefined) {
-      filtered = filtered.filter(user =>
-        isExactly.id
-          ? user.id.toString().toLowerCase() ===
-            data.id.toString().toLowerCase()
-          : user.id
-              .toString()
-              .toLowerCase()
-              .includes(data.id.toString().toLowerCase())
-      );
-    }
-
-    if (data.name !== null && data.name !== "" && data.name !== undefined) {
-      filtered = filtered.filter(user =>
-        isExactly.name
-          ? user.name.toString().toLowerCase() ===
-            data.name.toString().toLowerCase()
-          : user.name
-              .toString()
-              .toLowerCase()
-              .includes(data.name.toString().toLowerCase())
-      );
-    }
-
-    if (
-      data.postId !== null &&
-      data.postId !== "" &&
-      data.postId !== undefined
-    ) {
-      filtered = filtered.filter(user =>
-        isExactly.postId
-          ? user.postId.toString().toLowerCase() ===
-            data.postId.toString().toLowerCase()
-          : user.postId
-              .toString()
-              .toLowerCase()
-              .includes(data.postId.toString().toLowerCase())
-      );
-    }
-
-    if (data.email !== null && data.email !== "" && data.email !== undefined) {
-      filtered = filtered.filter(user =>
-        isExactly.email
-          ? user.email.toString().toLowerCase() ===
-            data.email.toString().toLowerCase()
-          : user.email
-              .toString()
-              .toLowerCase()
-              .includes(data.email.toString().toLowerCase())
-      );
-    }
-
-    if (filtered.length === dataArray.length) {
-      setIsSearchingMulti(false);
-    }
-
-    console.log(filtered);
     return filtered;
   }
 
@@ -382,7 +330,6 @@ function JpTable({
             size={dense ? "small" : "medium"}
           >
             <JpTableHead
-              classes={classes}
               columns={columnsData}
               moveCard={moveCard}
               numSelected={selected.length}
@@ -492,7 +439,8 @@ function JpTable({
 
 JpTable.prototypes = {
   columns: PropTypes.array.isRequired,
-  usersData: PropTypes.array.isRequired
+  usersData: PropTypes.array.isRequired,
+  tableSetting: PropTypes.object
 };
 
 export default JpTable;

@@ -26,27 +26,28 @@ function App() {
       disablePadding: false,
       label: "User Id"
     },
-    { id: "name", numeric: false, disablePadding: false, label: "Name" },
     {
-      id: "postId",
+      id: "name",
       numeric: false,
       isSortable: true,
       disablePadding: false,
+      label: "Name"
+    },
+    {
+      id: "postId",
+      numeric: false,
+      isSortable: false,
+      disablePadding: false,
       label: "Post Id"
     },
-    { id: "email", numeric: false, disablePadding: false, label: "Email" }
+    {
+      id: "email",
+      numeric: false,
+      isSortable: true,
+      disablePadding: false,
+      label: "Email"
+    }
   ];
-
-  const tableSetting = {
-    tableName: "JpTable",
-    globalSearch: false,
-    columnsHideShowSwitch: false,
-    tableMenu: false,
-    multiSearch: false,
-    hasEditing: false,
-    hasDeleting: false,
-    denseRowsSwitch: false
-  };
 
   return (
     <div className={classes.app}>
