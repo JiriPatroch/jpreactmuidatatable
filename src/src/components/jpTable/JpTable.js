@@ -2,61 +2,20 @@ import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import {
-  Box,
-  Checkbox,
   FormControlLabel,
   Paper,
   Switch,
   Table,
-  TableBody,
-  TableCell,
-  TablePagination,
-  TableRow,
-  Tooltip
+  TablePagination
 } from "@material-ui/core";
-import CreateIcon from "@material-ui/icons/Create";
-import DeleteSharpIcon from "@material-ui/icons/DeleteSharp";
 import JpTableHead from "./JpTableHead";
 import JpTableToolbar from "./JpTableToolbar";
+import JpTableBody from "./JpTableBody";
+import JpTableExpansionPanel from "./JpTableExpansionPanel";
 import update from "immutability-helper";
-
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import Typography from "@material-ui/core/Typography";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import TextField from "@material-ui/core/TextField";
 
 import { JpTableStyles } from "./styles/JpTableStyles";
 const useStyles = makeStyles(JpTableStyles);
-
-function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-
-  return stabilizedThis.map(el => el[0]);
-}
-
-function getSorting(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => desc(a, b, orderBy)
-    : (a, b) => -desc(a, b, orderBy);
-}
 
 const defaultTableSetting = {
   tableName: "JpTable",
@@ -94,15 +53,6 @@ function JpTable({
     setOrderBy(property);
   }
 
-  function handleSelectAllClick(event) {
-    if (event.target.checked) {
-      const newSelecteds = usersData.map(n => n.id);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  }
-
   function handleClick(event, name) {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -121,6 +71,15 @@ function JpTable({
     }
 
     setSelected(newSelected);
+  }
+
+  function handleSelectAllClick(event) {
+    if (event.target.checked) {
+      const newSelecteds = usersData.map(n => n.id);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
   }
 
   function handleChangePage(event, newPage) {
@@ -265,10 +224,6 @@ function JpTable({
       })
     );
   };
-  const isSelected = id => selected.indexOf(id) !== -1;
-
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, usersData.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
@@ -281,48 +236,13 @@ function JpTable({
           tableSetting={tableSetting}
         />
 
-        {tableSetting.multiSearch ? (
-          <ExpansionPanel defaultExpanded={true}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>Advanced Search</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <Box className={classes.advSearchFiledsBox}>
-                {columnsData.map(col => {
-                  return (
-                    <div key={col.id}>
-                      <TextField
-                        id={col.id}
-                        autoComplete="off"
-                        className={classes.advSearchField}
-                        label={col.label}
-                        margin="dense"
-                        variant="outlined"
-                        onChange={e => {
-                          handleMultiSearch(e, col.id);
-                        }}
-                      />
-                      <Tooltip
-                        disableFocusListener
-                        disableTouchListener
-                        title="is Exactly?"
-                      >
-                        <Checkbox
-                          name={col.id}
-                          onChange={e => handleExactSearch(e, col.id)}
-                          inputProps={{
-                            "aria-label": "primary checkbox"
-                          }}
-                          style={{ marginLeft: "-50px", marginTop: "7px" }}
-                        />
-                      </Tooltip>
-                    </div>
-                  );
-                })}
-              </Box>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        ) : null}
+        <JpTableExpansionPanel
+          columnsData={columnsData}
+          tableSetting={tableSetting}
+          handleMultiSearch={handleMultiSearch}
+          handleExactSearch={handleExactSearch}
+        />
+
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -340,69 +260,20 @@ function JpTable({
               rowCount={usersData.length}
               tableSetting={tableSetting}
             />
-            <TableBody>
-              {stableSort(
-                searchSwitch(searchTerm, multiSearchTerms, usersData),
-                getSorting(order, orderBy)
-              )
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
-                  return (
-                    <TableRow
-                      hover
-                      //onClick={event => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                          onClick={event => handleClick(event, row.id)}
-                        />
-                      </TableCell>
-                      {columnsData.map((data, index) => {
-                        return (
-                          <TableCell component="th" key={index}>
-                            {row[columnsData[index].id]}
-                          </TableCell>
-                        );
-                      })}
-
-                      {tableSetting.hasEditing ? (
-                        <TableCell className={classes.tableCell}>
-                          <CreateIcon
-                            onClick={() => {
-                              console.log(row);
-                            }}
-                          />
-                        </TableCell>
-                      ) : null}
-
-                      {tableSetting.hasEditing ? (
-                        <TableCell className={classes.tableCell}>
-                          <DeleteSharpIcon
-                            onClick={() => {
-                              console.log(row);
-                            }}
-                          />
-                        </TableCell>
-                      ) : null}
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
+            <JpTableBody
+              columnsData={columnsData}
+              order={order}
+              orderBy={orderBy}
+              selected={selected}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              tableSetting={tableSetting}
+              usersData={usersData}
+              searchTerm={searchTerm}
+              searchSwitch={searchSwitch}
+              handleClick={handleClick}
+              multiSearchTerms={multiSearchTerms}
+            />
           </Table>
         </div>
         <TablePagination
