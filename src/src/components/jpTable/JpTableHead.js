@@ -1,19 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   Checkbox,
   TableCell,
   TableHead,
   TableRow,
-  TableSortLabel
+  TableSortLabel,
+  Typography
 } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
 import DeleteSharpIcon from "@material-ui/icons/DeleteSharp";
 import JpTableHeadCell from "./JpTableHeadCell";
 
+import { JpTableHeadStyles } from "./styles/JpTableHeadStyles";
+const useStyles = makeStyles(JpTableHeadStyles);
+
 function JpTableHead(props) {
   const {
-    classes,
     columns,
     onSelectAllClick,
     order,
@@ -27,7 +31,7 @@ function JpTableHead(props) {
   const createSortHandler = property => event => {
     onRequestSort(event, property);
   };
-
+  const classes = useStyles();
   return (
     <TableHead>
       <TableRow>
@@ -48,18 +52,30 @@ function JpTableHead(props) {
             padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={order}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </span>
-              ) : null}
-            </TableSortLabel>
+            {headCell.isSortable ? (
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={order}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <span className={classes.visuallyHidden}>
+                    {order === "desc"
+                      ? "sorted descending"
+                      : "sorted ascending"}
+                  </span>
+                ) : null}
+              </TableSortLabel>
+            ) : (
+              <Typography
+                color="secondary"
+                variant="subtitle2"
+                className={classes.root}
+              >
+                {headCell.label}
+              </Typography>
+            )}
           </JpTableHeadCell>
         ))}
         {tableSetting.hasEditing ? (
@@ -78,13 +94,15 @@ function JpTableHead(props) {
 }
 
 JpTableHead.propTypes = {
-  classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
+  columns: PropTypes.array.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.oneOf(["asc", "desc"]).isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired
+  numSelected: PropTypes.number.isRequired,
+  rowCount: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  moveCard: PropTypes.func.isRequired,
+  tebleSetting: PropTypes.object
 };
 
 export default JpTableHead;

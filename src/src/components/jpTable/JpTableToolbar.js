@@ -121,7 +121,7 @@ const JpTableToolbar = ({
                       return (
                         <Box className={classes.menuItemsBox} key={index}>
                           <MenuItem onClick={handleClose}>
-                            {headCell.id}
+                            {headCell.label}
                           </MenuItem>
                           <Checkbox
                             onClick={() => handleHideShowColumn(headCell)}
