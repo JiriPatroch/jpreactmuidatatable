@@ -18,36 +18,49 @@ function App() {
     });
   }, []);
 
-  const columns = [
+  const columnsSetting = [
     {
       id: "id",
-      numeric: false,
       isSortable: true,
-      disablePadding: false,
       label: "User Id"
     },
     {
-      id: "name",
-      numeric: false,
-      isSortable: true,
-      disablePadding: false,
-      label: "Name"
-    },
-    {
       id: "postId",
-      numeric: false,
-      isSortable: false,
-      disablePadding: false,
+      isSortable: true,
       label: "Post Id"
     },
     {
-      id: "email",
-      numeric: false,
+      id: "name",
       isSortable: true,
-      disablePadding: false,
-      label: "Email"
-    }
+      label: "Name"
+    },
+    {
+      id: "email",
+      isSortable: true,
+      label: "E-mail"
+    },
   ];
+
+  const onEditClick = (data) => {
+    console.log("Edit clicked");
+    console.log(data);
+  }
+
+  const onRemoveClick = (data) => {
+    console.log("Remove clicked");
+    console.log(data);
+  }
+
+  const tableSetting = {
+    tableName: "JpTable",
+    globalSearch: true,
+    columnsHideShowSwitch: true,
+    tableMenu: true,
+    multiSearch: true,
+    hasEditing: true,
+    hasDeleting: true,
+    denseRowsSwitch: true
+  };
 
   return (
     <div className={classes.app}>
@@ -55,8 +68,10 @@ function App() {
         <Paper className={classes.paper}>
           <JpTable
             usersData={usersData}
-            columns={columns}
-            //tableSetting={tableSetting}
+            columns={columnsSetting}
+            onEditClick={onEditClick}
+            onRemoveClick={onRemoveClick}
+            tableSetting={tableSetting}
           ></JpTable>
         </Paper>
       </Box>

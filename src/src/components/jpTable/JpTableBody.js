@@ -48,7 +48,9 @@ function JpTableBody({
   searchTerm,
   searchSwitch,
   handleClick,
-  multiSearchTerms
+  multiSearchTerms,
+  onEditClick,
+  onRemoveClick
 }) {
   const classes = useStyles();
 
@@ -75,7 +77,7 @@ function JpTableBody({
               role="checkbox"
               aria-checked={isItemSelected}
               tabIndex={-1}
-              key={row.id}
+              key={index}
               selected={isItemSelected}
             >
               <TableCell padding="checkbox">
@@ -97,17 +99,17 @@ function JpTableBody({
                 <TableCell className={classes.tableCell}>
                   <CreateIcon
                     onClick={() => {
-                      console.log(row);
+                      onEditClick(row)
                     }}
                   />
                 </TableCell>
               ) : null}
 
-              {tableSetting.hasEditing ? (
+              {tableSetting.hasDeleting ? (
                 <TableCell className={classes.tableCell}>
                   <DeleteSharpIcon
                     onClick={() => {
-                      console.log(row);
+                      onRemoveClick(row)
                     }}
                   />
                 </TableCell>
