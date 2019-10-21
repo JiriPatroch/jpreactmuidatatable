@@ -14,7 +14,7 @@ import {
   Typography
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import FilterListIcon from "@material-ui/icons/FilterList";
+import MenuIcon from '@material-ui/icons/Menu';
 import SettingsApplicationsSharpIcon from "@material-ui/icons/SettingsApplicationsSharp";
 import SearchIcon from "@material-ui/icons/Search";
 
@@ -53,10 +53,10 @@ const JpTableToolbar = ({
             {numSelected} selected
           </Typography>
         ) : (
-          <Typography variant="h6" id="tableTitle">
-            {tableSetting.tableName}
-          </Typography>
-        )}
+            <Typography variant="h6" id="tableTitle">
+              {tableSetting.tableName}
+            </Typography>
+          )}
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
@@ -67,82 +67,82 @@ const JpTableToolbar = ({
             </IconButton>
           </Tooltip>
         ) : (
-          <>
-            <Box display="flex" flexDirection="row">
-              {tableSetting.globalSearch ? (
-                <div className={classes.search}>
-                  <div className={classes.searchIcon}>
-                    <SearchIcon />
+            <>
+              <Box display="flex" flexDirection="row">
+                {tableSetting.globalSearch ? (
+                  <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                      <SearchIcon />
+                    </div>
+                    <InputBase
+                      placeholder="Search…"
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput
+                      }}
+                      inputProps={{ "aria-label": "search" }}
+                      onChange={e => handleSearch(e)}
+                    />
                   </div>
-                  <InputBase
-                    placeholder="Search…"
-                    classes={{
-                      root: classes.inputRoot,
-                      input: classes.inputInput
-                    }}
-                    inputProps={{ "aria-label": "search" }}
-                    onChange={e => handleSearch(e)}
-                  />
-                </div>
-              ) : null}
+                ) : null}
 
-              {tableSetting.columnsHideShowSwitch ? (
-                <>
-                  <Tooltip title="Settings">
-                    <IconButton
-                      aria-label="Settings"
-                      aria-controls="simple-menu"
-                      aria-haspopup="true"
-                      onClick={handleClick}
+                {tableSetting.columnsHideShowSwitch ? (
+                  <>
+                    <Tooltip title="Settings">
+                      <IconButton
+                        aria-label="Settings"
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        onClick={handleClick}
+                      >
+                        <SettingsApplicationsSharpIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={anchorEl}
+                      keepMounted
+                      open={Boolean(anchorEl)}
+                      onClose={handleClose}
+                      PaperProps={{
+                        style: {
+                          padding: 20
+                        }
+                      }}
                     >
-                      <SettingsApplicationsSharpIcon />
+                      <Typography
+                        variant="subtitle1"
+                        align="center"
+                        color="secondary"
+                      >
+                        Hide/Show Columns
+                    </Typography>
+                      {columnsNames.map((headCell, index) => {
+                        return (
+                          <Box className={classes.menuItemsBox} key={index}>
+                            <MenuItem onClick={handleClose}>
+                              {headCell.label}
+                            </MenuItem>
+                            <Checkbox
+                              onClick={() => handleHideShowColumn(headCell)}
+                            />
+                          </Box>
+                        );
+                      })}
+                    </Menu>
+                  </>
+                ) : null}
+
+                {tableSetting.tableMenu ? (
+                  <Tooltip title="Table Menu">
+                    <IconButton aria-label="table menu">
+                      <MenuIcon />
                     </IconButton>
                   </Tooltip>
-                  <Menu
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                    PaperProps={{
-                      style: {
-                        padding: 20
-                      }
-                    }}
-                  >
-                    <Typography
-                      variant="subtitle1"
-                      align="center"
-                      color="secondary"
-                    >
-                      Hide/Show Columns
-                    </Typography>
-                    {columnsNames.map((headCell, index) => {
-                      return (
-                        <Box className={classes.menuItemsBox} key={index}>
-                          <MenuItem onClick={handleClose}>
-                            {headCell.label}
-                          </MenuItem>
-                          <Checkbox
-                            onClick={() => handleHideShowColumn(headCell)}
-                          />
-                        </Box>
-                      );
-                    })}
-                  </Menu>
-                </>
-              ) : null}
-
-              {tableSetting.tableMenu ? (
-                <Tooltip title="Filter list">
-                  <IconButton aria-label="filter list">
-                    <FilterListIcon />
-                  </IconButton>
-                </Tooltip>
-              ) : null}
-            </Box>
-          </>
-        )}
+                ) : null}
+              </Box>
+            </>
+          )}
       </div>
     </Toolbar>
   );

@@ -17,21 +17,34 @@ import update from "immutability-helper";
 import { JpTableStyles } from "./styles/JpTableStyles";
 const useStyles = makeStyles(JpTableStyles);
 
+
+/**
+|--------------------------------------------------
+| Default Table setting START
+|--------------------------------------------------
+*/
 const defaultTableSetting = {
   tableName: "JpTable",
-  globalSearch: true,
-  columnsHideShowSwitch: true,
-  tableMenu: true,
-  multiSearch: true,
-  hasEditing: true,
-  hasDeleting: true,
-  denseRowsSwitch: true
+  globalSearch: false,
+  columnsHideShowSwitch: false,
+  tableMenu: false,
+  multiSearch: false,
+  hasEditing: false,
+  hasDeleting: false,
+  denseRowsSwitch: false
 };
+/**
+|--------------------------------------------------
+| Default Table setting END
+|--------------------------------------------------
+*/
 
 function JpTable({
   columns,
   usersData,
-  tableSetting = { ...defaultTableSetting }
+  tableSetting = { ...defaultTableSetting },
+  onEditClick,
+  onRemoveClick
 }) {
   const classes = useStyles();
   const [columnsData, setColumnsData] = React.useState(columns);
@@ -190,11 +203,11 @@ function JpTable({
         filtered = filtered.filter(user =>
           isExactly[col.id]
             ? user[col.id].toString().toLowerCase() ===
-              data[col.id].toString().toLowerCase()
+            data[col.id].toString().toLowerCase()
             : user[col.id]
-                .toString()
-                .toLowerCase()
-                .includes(data[col.id].toString().toLowerCase())
+              .toString()
+              .toLowerCase()
+              .includes(data[col.id].toString().toLowerCase())
         );
       }
     });
@@ -273,6 +286,8 @@ function JpTable({
               searchSwitch={searchSwitch}
               handleClick={handleClick}
               multiSearchTerms={multiSearchTerms}
+              onEditClick={onEditClick}
+              onRemoveClick={onRemoveClick}
             />
           </Table>
         </div>
@@ -283,8 +298,8 @@ function JpTable({
             isSearching
               ? searchTermFullText(searchTerm, usersData).length
               : isSearchingMulti
-              ? searchMultiTerms(multiSearchTerms, usersData).length
-              : usersData.length
+                ? searchMultiTerms(multiSearchTerms, usersData).length
+                : usersData.length
           }
           rowsPerPage={rowsPerPage}
           page={page}

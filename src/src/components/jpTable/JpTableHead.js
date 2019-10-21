@@ -47,7 +47,7 @@ function JpTableHead(props) {
             index={index}
             id={headCell.id}
             moveCard={moveCard}
-            key={headCell.id}
+            key={index}
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
@@ -68,14 +68,14 @@ function JpTableHead(props) {
                 ) : null}
               </TableSortLabel>
             ) : (
-              <Typography
-                color="secondary"
-                variant="subtitle2"
-                className={classes.root}
-              >
-                {headCell.label}
-              </Typography>
-            )}
+                <Typography
+                  color="secondary"
+                  variant="subtitle2"
+                  className={classes.root}
+                >
+                  {headCell.label}
+                </Typography>
+              )}
           </JpTableHeadCell>
         ))}
         {tableSetting.hasEditing ? (

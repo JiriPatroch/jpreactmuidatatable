@@ -28,9 +28,9 @@ function JpTableExpansionPanel({
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <Box className={classes.advSearchFiledsBox}>
-              {columnsData.map(col => {
+              {columnsData.map((col, index) => {
                 return (
-                  <div key={col.id}>
+                  <div key={index}>
                     <TextField
                       id={col.id}
                       autoComplete="off"
