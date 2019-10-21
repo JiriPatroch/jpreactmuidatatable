@@ -13,6 +13,8 @@ import JpTableToolbar from "./JpTableToolbar";
 import JpTableBody from "./JpTableBody";
 import JpTableExpansionPanel from "./JpTableExpansionPanel";
 import update from "immutability-helper";
+import { MainTableContext } from "./store/store";
+import useMainTableActions from "./store/actions/mainTableActions";
 
 import { JpTableStyles } from "./styles/JpTableStyles";
 const useStyles = makeStyles(JpTableStyles);
@@ -48,23 +50,31 @@ function JpTable({
 }) {
   const classes = useStyles();
   const [columnsData, setColumnsData] = React.useState(columns);
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("id");
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(true);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [isSearching, setIsSearching] = React.useState(false);
-  const [isSearchingMulti, setIsSearchingMulti] = React.useState(false);
-  const [multiSearchTerms, setMultiSearchTerms] = React.useState({});
-  const [isExactly, setIsExactly] = React.useState({});
+  //const [order, setOrder] = React.useState("asc");
+  // const [orderBy, setOrderBy] = React.useState("id");
+  // const [selected, setSelected] = React.useState([]);
+  //const [page, setPage] = React.useState(0);
+  //const [dense, setDense] = React.useState(true);
+  //const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  //const [searchTerm, setSearchTerm] = React.useState("");
+  //const [isSearching, setIsSearching] = React.useState(false);
+  //const [isSearchingMulti, setIsSearchingMulti] = React.useState(false);
+  //const [multiSearchTerms, setMultiSearchTerms] = React.useState({});
+  //const [isExactly, setIsExactly] = React.useState();
+
+  const { state, dispatch } = React.useContext(MainTableContext);
+  const { order, orderBy, selected, page, dense, rowsPerPage, searchTerm, isSearching, isSearchingMulti, multiSearchTerms, isExactly } = state;
+  const { setOrder, setOrderBy, setSelected, setPage, setDense, setRowsPerPage, setSearchTerm, setIsSearching, setIsSearchingMulti, setMultiSearchTerms, setIsExactly } = useMainTableActions(dispatch);
+
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === "desc";
-    setOrder(isDesc ? "asc" : "desc");
+    setOrder(isDesc);
     setOrderBy(property);
   }
+
+
+  console.log(isSearchingMulti);
 
   function handleClick(event, name) {
     const selectedIndex = selected.indexOf(name);
@@ -216,17 +226,7 @@ function JpTable({
   }
 
   function handleExactSearch(e, colId) {
-    if (e.target.checked === true) {
-      setIsExactly({
-        ...isExactly,
-        [e.target.name]: true
-      });
-    } else {
-      setIsExactly({
-        ...isExactly,
-        [e.target.name]: false
-      });
-    }
+    setIsExactly(e);
   }
 
   const moveCard = (dragIndex, hoverIndex) => {

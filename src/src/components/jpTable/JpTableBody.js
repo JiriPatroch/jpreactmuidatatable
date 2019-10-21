@@ -127,20 +127,20 @@ function JpTableBody({
 }
 
 JpTableBody.prototypes = {
-  columnsData: PropTypes.array.isRequired,
-  tableSetting: PropTypes.object.isRequired,
-  handleExactSearch: PropTypes.func.isRequired,
-  handleMultiSearch: PropTypes.func.isRequired,
-  order: PropTypes.string.isRequired,
-  orderBy: PropTypes.string.isRequired,
-  selected: PropTypes.array.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-  usersData: PropTypes.array.isRequired,
-  searchTerm: PropTypes.string.isRequired,
-  searchSwitch: PropTypes.func.isRequired,
-  handleClick: PropTypes.func.isRequired,
-  multiSearchTerms: PropTypes.object.isRequired
+  // columnsData: PropTypes.array.isRequired,
+  // tableSetting: PropTypes.object.isRequired,
+  // handleExactSearch: PropTypes.func.isRequired,
+  // handleMultiSearch: PropTypes.func.isRequired,
+  // order: PropTypes.string.isRequired,
+  // orderBy: PropTypes.string.isRequired,
+  // selected: PropTypes.array.isRequired,
+  // page: PropTypes.number.isRequired,
+  // rowsPerPage: PropTypes.number.isRequired,
+  // usersData: PropTypes.array.isRequired,
+  // searchTerm: PropTypes.string.isRequired,
+  // searchSwitch: PropTypes.func.isRequired,
+  // handleClick: PropTypes.func.isRequired,
+  // multiSearchTerms: PropTypes.object.isRequired
 };
 
 export default JpTableBody;

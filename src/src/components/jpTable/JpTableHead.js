@@ -94,15 +94,15 @@ function JpTableHead(props) {
 }
 
 JpTableHead.propTypes = {
-  columns: PropTypes.array.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  numSelected: PropTypes.number.isRequired,
-  rowCount: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  moveCard: PropTypes.func.isRequired,
-  tebleSetting: PropTypes.object
+  // columns: PropTypes.array.isRequired,
+  // onSelectAllClick: PropTypes.func.isRequired,
+  // order: PropTypes.oneOf(["asc", "desc"]).isRequired,
+  // orderBy: PropTypes.string.isRequired,
+  // numSelected: PropTypes.number.isRequired,
+  // rowCount: PropTypes.number.isRequired,
+  // onRequestSort: PropTypes.func.isRequired,
+  // moveCard: PropTypes.func.isRequired,
+  // tebleSetting: PropTypes.object
 };
 
 export default JpTableHead;
