@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Checkbox, TableBody, TableCell, TableRow } from "@material-ui/core";
 import CreateIcon from "@material-ui/icons/Create";
 import DeleteSharpIcon from "@material-ui/icons/DeleteSharp";
+import { MainTableContext } from "./store/store";
 
 import { JpTableStyles } from "./styles/JpTableStyles";
 const useStyles = makeStyles(JpTableStyles);
@@ -38,21 +39,19 @@ function getSorting(order, orderBy) {
 
 function JpTableBody({
   columnsData,
-  order,
-  orderBy,
-  selected,
-  page,
-  rowsPerPage,
   tableSetting,
   usersData,
-  searchTerm,
   searchSwitch,
   handleClick,
-  multiSearchTerms,
   onEditClick,
   onRemoveClick
 }) {
   const classes = useStyles();
+
+  //context API START
+  const { state } = React.useContext(MainTableContext);
+  const { order, orderBy, selected, page, rowsPerPage, searchTerm, multiSearchTerms } = state;
+  //context API END
 
   const isSelected = id => selected.indexOf(id) !== -1;
 
@@ -73,7 +72,6 @@ function JpTableBody({
           return (
             <TableRow
               hover
-              //onClick={event => handleClick(event, row.id)}
               role="checkbox"
               aria-checked={isItemSelected}
               tabIndex={-1}
@@ -129,18 +127,11 @@ function JpTableBody({
 JpTableBody.prototypes = {
   columnsData: PropTypes.array.isRequired,
   tableSetting: PropTypes.object.isRequired,
-  handleExactSearch: PropTypes.func.isRequired,
-  handleMultiSearch: PropTypes.func.isRequired,
-  order: PropTypes.string.isRequired,
-  orderBy: PropTypes.string.isRequired,
-  selected: PropTypes.array.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
   usersData: PropTypes.array.isRequired,
-  searchTerm: PropTypes.string.isRequired,
   searchSwitch: PropTypes.func.isRequired,
   handleClick: PropTypes.func.isRequired,
-  multiSearchTerms: PropTypes.object.isRequired
+  onEditClick: PropTypes.func,
+  onRemoveClick: PropTypes.func,
 };
 
 export default JpTableBody;

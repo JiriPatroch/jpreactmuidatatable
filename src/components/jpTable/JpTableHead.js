@@ -12,26 +12,32 @@ import {
 import CreateIcon from "@material-ui/icons/Create";
 import DeleteSharpIcon from "@material-ui/icons/DeleteSharp";
 import JpTableHeadCell from "./JpTableHeadCell";
+import { MainTableContext } from "./store/store";
 
 import { JpTableHeadStyles } from "./styles/JpTableHeadStyles";
 const useStyles = makeStyles(JpTableHeadStyles);
 
 function JpTableHead(props) {
+  const classes = useStyles();
   const {
     columns,
     onSelectAllClick,
-    order,
-    orderBy,
     numSelected,
     rowCount,
     onRequestSort,
     moveCard,
     tableSetting
   } = props;
+
   const createSortHandler = property => event => {
     onRequestSort(event, property);
   };
-  const classes = useStyles();
+
+  //context API START
+  const { state } = React.useContext(MainTableContext);
+  const { order, orderBy } = state;
+  //context API END
+
   return (
     <TableHead>
       <TableRow>
@@ -96,8 +102,6 @@ function JpTableHead(props) {
 JpTableHead.propTypes = {
   columns: PropTypes.array.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-  orderBy: PropTypes.string.isRequired,
   numSelected: PropTypes.number.isRequired,
   rowCount: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
