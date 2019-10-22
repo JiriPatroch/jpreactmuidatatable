@@ -1,6 +1,6 @@
 # JP React MUI Datatable
 
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/JiriPatroch/JPQuizApp?color=orange&style=flat-square) ![GitHub](https://img.shields.io/github/license/JiriPatroch/JPQuizApp?color=orange&style=flat-square) ![GitHub package.json version](https://img.shields.io/github/package-json/v/JiriPatroch/jpreactmuidatatable?color=orange&style=flat-square) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue)](https://www.paypal.com/paypalme2/jiripatroch)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/JiriPatroch/jpreactmuidatatable?color=orange&style=flat-square) ![GitHub](https://img.shields.io/github/license/JiriPatroch/jpreactmuidatatable?color=orange&style=flat-square) ![GitHub package.json version](https://img.shields.io/github/package-json/v/JiriPatroch/jpreactmuidatatable?color=orange&style=flat-square) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue)](https://www.paypal.com/paypalme2/jiripatroch)
 
 
 ## About
