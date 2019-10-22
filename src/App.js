@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Paper } from "@material-ui/core";
-import axios from "axios";
-import JpTable from "./jpTable/JpTable";
+//import axios from "axios";
+import { usersDataApi } from "./data/usersData";
+import JpMuiDatatable from "./components/jpTable/JpMuiDatatable";
 
-import appStyles from "./../styles/appStyles";
+import appStyles from "./styles/appStyles";
 
 const useStyles = makeStyles(appStyles);
 
 function App() {
   const classes = useStyles();
-  const [usersData, setUsersData] = useState([]);
+  const [usersData] = useState(usersDataApi);
 
-  useEffect(() => {
-    axios.get(`https://jsonplaceholder.typicode.com/comments`).then(res => {
-      setUsersData(res.data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   axios.get(`https://jsonplaceholder.typicode.com/comments`).then(res => {
+  //     setUsersData(res.data);
+  //   });
+  // }, []);
 
   const columnsSetting = [
     {
@@ -66,13 +67,13 @@ function App() {
     <div className={classes.app}>
       <Box className={classes.box}>
         <Paper className={classes.paper}>
-          <JpTable
+          <JpMuiDatatable
             usersData={usersData}
             columns={columnsSetting}
             onEditClick={onEditClick}
             onRemoveClick={onRemoveClick}
             tableSetting={tableSetting}
-          ></JpTable>
+          ></JpMuiDatatable>
         </Paper>
       </Box>
     </div>

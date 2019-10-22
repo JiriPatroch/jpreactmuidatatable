@@ -2,7 +2,7 @@ const appstyles = theme => ({
   app: {
     height: "100vh",
     width: "100vw",
-    backgroundColor: "gray",
+    backgroundColor: "lightGrey",
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
@@ -10,11 +10,12 @@ const appstyles = theme => ({
   },
   box: {
     position: "relative",
-    height: "80vh",
-    width: "80vw"
+    minHeight: "80vh",
+    minWidth: "80vw"
   },
   paper: {
-    padding: "24px"
+    padding: "24px",
+    backgroundColor: theme.palette.background.tablebottom
   }
 });
 

@@ -5,8 +5,6 @@ const useMainTableActions = dispatch => {
 
 
     const setOrder = isDesc => {
-        //isDesc ? "asc" : "desc"
-
         if (isDesc) {
             dispatch({
                 type: Types.SET_ORDER,
@@ -90,7 +88,6 @@ const useMainTableActions = dispatch => {
             dispatch({
                 type: Types.SET_IS_EXACTLY,
                 payload: {
-                    //...state.isExactly,
                     [e.target.name]: true
                 }
             });
@@ -98,13 +95,11 @@ const useMainTableActions = dispatch => {
             dispatch({
                 type: Types.SET_IS_EXACTLY,
                 payload: {
-                    //...state.isExactly,
                     [e.target.name]: false
                 }
             })
         }
     }
-
 
     return { setOrder, setOrderBy, setSelected, setPage, setDense, setRowsPerPage, setSearchTerm, setIsSearching, setIsSearchingMulti, setMultiSearchTerms, setIsExactly };
 }

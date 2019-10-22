@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./src/styles/index.scss";
-import App from "./src/components/App";
-import Appwrapper from "./src/components/Appwrapper";
+import "./styles/index.scss";
+import App from "./App";
+import Appwrapper from "./Appwrapper";
 
 ReactDOM.render(
   <Appwrapper>
