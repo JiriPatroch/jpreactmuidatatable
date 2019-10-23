@@ -33,7 +33,7 @@ Datatable based on most popular [React UI framework "Material-UI"](https://mater
 
 See fully functional preview (link below). This example will show you table with all functions turned on. Table is fetching "posts" data from fake REST API [JSONPlaceholder](https://jsonplaceholder.typicode.com/),
 
-##### [SEE EXAMPLE PREVIEW](https://jiripatroch.github.io/jpreactmuidatatable/)
+##### [SEE EXAMPLE PREVIEW](http://jpreactmuidatatable.g6.cz/)
 
 
 ## Documentation
@@ -308,6 +308,7 @@ function App() {
 }
 export default App;
 ```
+
 ## License
 
 The code in this project is licensed under the MIT License. See [LICENSE.md](LICENSE.md) for details.
